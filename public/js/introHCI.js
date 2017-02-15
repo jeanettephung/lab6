@@ -27,6 +27,25 @@ function addProjectDetails(e) {
 	var idNumber = projectID.substr('project'.length);
 
 	console.log("User clicked on project " + idNumber);
+	
+	var selector = "#" + projectID + ' .details';
+	console.log(selector); 
+	
+	$.get("/project/"+idNumber, addDetail);
+	
+	$(selector).html("foo");
+	
+}
+
+function addDetail(result) {
+	console.log(result);
+	
+	var selector = "#project" + result["id"] + ' .details';
+	
+	var projectHTML = '<img src="' + result['image'] + '" class="detailsImage">' + '<h3>' + result['date'] + '</h3><p>' + result['summary'] + '</p>';
+	
+	$(selector).html(projectHTML);
+
 }
 
 /*
@@ -34,5 +53,24 @@ function addProjectDetails(e) {
  * and apply it
  */
 function randomizeColors(e) {
-	console.log("User clicked on color button");
+	$.get("/palette", getColor);
+
+	console.log("User clicked on color button");	
+}
+
+function getColor(result) {
+	var data = JSON.stringify(result['colors']);
+	console.log(data);
+
+	var json = JSON.parse(data);
+	console.log(json["hex"][0]);
+	
+	var colors = [json["hex"][0], json["hex"][1], json["hex"][2], json["hex"][3], json["hex"][4]];
+	
+		
+	$('body').css('background-color', colors[0]);
+	$('.thumbnail').css('background-color', colors[1]);
+	$('h1, h2, h3, h4, h5, h5').css('color', colors[2]);
+	$('p').css('color', colors[3]);
+	$('.project img').css('opacity', .75);
 }
